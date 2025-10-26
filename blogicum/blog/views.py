@@ -1,6 +1,7 @@
+from django.http import Http404
+
 from django.shortcuts import render
 
-# Create your views here.
 
 posts = [
     {
@@ -45,20 +46,28 @@ posts = [
     },
 ]
 
+posts_by_id = {post['id']: post for post in posts}
+
 
 def index(request):
-    template_name = 'blog/index.html'
-    context = {'index': posts[::-1]}
-    return render(request, template_name, context)
+    '''Рендеринг главной страницы'''
+
+    context = {'index': reversed(posts)}
+    return render(request, 'blog/index.html', context)
 
 
-def post_detail(request, id):
-    template_name = 'blog/detail.html'
-    context = {'post': posts[id]}
-    return render(request, template_name, context)
+def post_detail(request, post_id):
+    '''Рендеринг страницы статьи'''
+
+    if post_id in posts_by_id:
+        context = {'post': posts_by_id[post_id]}
+        return render(request, 'blog/detail.html', context)
+    else:
+        raise Http404('Post does not found')
 
 
 def category_posts(request, category_slug):
-    template_name = 'blog/category.html'
+    '''Рендеринг статьи по категории'''
+
     context = {'category_slug': category_slug}
-    return render(request, template_name, context)
+    return render(request, 'blog/category.html', context)
