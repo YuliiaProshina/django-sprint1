@@ -1,5 +1,4 @@
 from django.http import Http404
-
 from django.shortcuts import render
 
 
@@ -50,21 +49,20 @@ posts_by_id = {post['id']: post for post in posts}
 
 
 def index(request):
-    """Рендеринг главной страницы"""
+    """Рендеринг главной страницы."""
     context = {'index': reversed(posts)}
     return render(request, 'blog/index.html', context)
 
 
 def post_detail(request, post_id):
-    """Рендеринг страницы статьи"""
+    """Рендеринг страницы статьи."""
     if post_id in posts_by_id:
         context = {'post': posts_by_id[post_id]}
         return render(request, 'blog/detail.html', context)
-    else:
-        raise Http404('Post does not found')
+    raise Http404(f'Post with id = {post_id} is not found')
 
 
 def category_posts(request, category_slug):
-    """Рендеринг статьи по категории"""
+    """Рендеринг статьи по категории."""
     context = {'category_slug': category_slug}
     return render(request, 'blog/category.html', context)
